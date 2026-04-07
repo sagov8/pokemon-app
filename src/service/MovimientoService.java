@@ -1,9 +1,6 @@
 package service;
 
-import factory.CreadorMovimiento;
-import factory.CreadorMovimientoAgua;
-import factory.CreadorMovimientoFuego;
-import factory.CreadorMovimientoPsiquico;
+import factory.*;
 import model.pokemon.Movimiento;
 
 import java.util.ArrayList;
@@ -17,10 +14,16 @@ public class MovimientoService {
         CreadorMovimiento creadorFuego = new CreadorMovimientoFuego();
         CreadorMovimiento creadorAgua = new CreadorMovimientoAgua();
         CreadorMovimiento creadorPsiquico = new CreadorMovimientoPsiquico();
+        CreadorMovimiento creadorTierra = new CreadorMovimientoTierra();
+        CreadorMovimiento creadorAire = new CreadorMovimientoAire();
+        CreadorMovimiento creadorElectrico = new CreadorMovimientoElectrico();
 
         movimientos.add(creadorFuego.prepararMovimiento());
         movimientos.add(creadorAgua.prepararMovimiento());
         movimientos.add(creadorPsiquico.prepararMovimiento());
+        movimientos.add(creadorTierra.prepararMovimiento());
+        movimientos.add(creadorAire.prepararMovimiento());
+        movimientos.add(creadorElectrico.prepararMovimiento());
 
         return movimientos;
     }
