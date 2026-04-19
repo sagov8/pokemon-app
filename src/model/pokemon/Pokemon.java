@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Pokemon {
+
     private static final int MAX_MOVIMIENTOS = 4;
     private static final int EXP_POR_NIVEL = 100;
 
@@ -24,7 +25,7 @@ public class Pokemon {
     private EstadoPokemon estado;
 
     private final List<Movimiento> movimientos = new ArrayList<>();
-    private Pokemon evolucion; // null si no tiene evolución
+    private Pokemon evolucion;
 
     public Pokemon(int id, String nombre, TipoPokemon tipo,
                    int nivel, int vidaMaxima,
@@ -39,22 +40,27 @@ public class Pokemon {
         this.defensa = defensa;
         this.velocidad = velocidad;
         this.estado = EstadoPokemon.ACTIVO;
-        this.experiencia = 0;
     }
 
-    // ── Combate ──────────────────────────────────────────────────────────
+    // ── Combate ───────────────────────────────────────────────────────────
 
-    public void atacar(Pokemon defensor, Movimiento movimiento) {
-        if (estaDebilitado()) return;
-        movimiento.usarMovimiento(this, defensor);
+    /**
+     * Ejecuta la animación/mensaje del movimiento.
+     * Retorna el daño BASE del movimiento (sin stats ni efectividad).
+     * Batalla se encarga de aplicar el daño final al defensor.
+     */
+    public int atacar(Movimiento movimiento) {
+        if (estaDebilitado()) return 0;
+        movimiento.usarMovimiento();          // imprime el mensaje del movimiento
+        return movimiento.calcularDanio();    // daño base: poder + bonus del movimiento
     }
 
+    /**
+     * Recibe el daño final ya calculado por Batalla.
+     */
     public void recibirDanio(int danio) {
-        if (danio < 0) danio = 0;
-        vidaActual = Math.max(0, vidaActual - danio);
-        if (vidaActual == 0) {
-            estado = EstadoPokemon.DEBILIDAD;
-        }
+        vidaActual = Math.max(0, vidaActual - Math.max(0, danio));
+        if (vidaActual == 0) estado = EstadoPokemon.DEBILIDAD;
     }
 
     public void restaurarVida(int cantidad) {
@@ -65,7 +71,7 @@ public class Pokemon {
     public void revivir() {
         if (!estaDebilitado()) return;
         estado = EstadoPokemon.ACTIVO;
-        vidaActual = vidaMaxima / 2; // revive con la mitad de vida
+        vidaActual = vidaMaxima / 2;
     }
 
     // ── Experiencia y nivel ───────────────────────────────────────────────
@@ -73,44 +79,32 @@ public class Pokemon {
     public void ganarExperiencia(int exp) {
         if (estaDebilitado()) return;
         experiencia += exp;
-        while (experiencia >= expNecesariaParaSiguienteNivel()) {
-            experiencia -= expNecesariaParaSiguienteNivel();
+        while (experiencia >= nivel * EXP_POR_NIVEL) {
+            experiencia -= nivel * EXP_POR_NIVEL;
             subirNivel();
         }
     }
 
-    private int expNecesariaParaSiguienteNivel() {
-        return nivel * EXP_POR_NIVEL;
-    }
-
     private void subirNivel() {
         nivel++;
-        // Incremento de stats al subir nivel
-        int bonus = nivel * 2;
-        vidaMaxima += bonus;
-        vidaActual += bonus;
+        vidaMaxima += nivel * 2;
+        vidaActual += nivel * 2;
         ataque += nivel;
         defensa += nivel;
         velocidad += nivel / 2;
-
         System.out.println("¡" + nombre + " subió al nivel " + nivel + "!");
         verificarEvolucion();
     }
 
     private void verificarEvolucion() {
         if (evolucion != null && nivel >= 16) {
-            System.out.println("¡" + nombre + " puede evolucionar! (acepta/rechaza en el menú)");
+            System.out.println("¡" + nombre + " puede evolucionar!");
         }
     }
 
-    /**
-     * Aplica la evolución: este pokemon adopta los stats del siguiente en la cadena.
-     * Retorna true si la evolución fue exitosa.
-     */
     public boolean evolucionar() {
         if (evolucion == null || nivel < 16) return false;
         System.out.println("¡" + nombre + " está evolucionando!");
-        // La evolución la gestiona Entrenador/JuegoService para reemplazar la referencia
         return true;
     }
 
@@ -138,14 +132,11 @@ public class Pokemon {
         return estado == EstadoPokemon.ACTIVO;
     }
 
-    /**
-     * Porcentaje de vida restante, útil para la barra de HP.
-     */
     public double porcentajeVida() {
         return (double) vidaActual / vidaMaxima;
     }
 
-    // ── Setters controlados ───────────────────────────────────────────────
+    // ── Setter ────────────────────────────────────────────────────────────
 
     public void setEvolucion(Pokemon evolucion) {
         this.evolucion = evolucion;

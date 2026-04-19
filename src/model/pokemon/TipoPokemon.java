@@ -4,9 +4,21 @@ public enum TipoPokemon {
     FUEGO, AGUA, TIERRA, AIRE, ELECTRICO, PSIQUICO;
 
     /**
-     * Retorna el multiplicador de daño cuando este tipo ataca al tipo defensor.
-     * 2.0 = súper efectivo, 0.5 = poco efectivo, 0.0 = inmune, 1.0 = normal
+     * Convierte el String que retorna Movimiento.getTipo() a enum.
+     * Así Batalla puede calcular efectividad sin cambiar la interfaz existente.
      */
+    public static TipoPokemon desdeCadena(String tipo) {
+        return switch (tipo.toUpperCase().trim()) {
+            case "FUEGO"     -> FUEGO;
+            case "AGUA"      -> AGUA;
+            case "TIERRA"    -> TIERRA;
+            case "AIRE"      -> AIRE;
+            case "ELECTRICO" -> ELECTRICO;
+            case "PSIQUICO"  -> PSIQUICO;
+            default -> throw new IllegalArgumentException("Tipo desconocido: " + tipo);
+        };
+    }
+
     public double efectividadContra(TipoPokemon defensor) {
         return switch (this) {
             case FUEGO     -> switch (defensor) {
