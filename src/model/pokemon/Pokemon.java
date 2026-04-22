@@ -42,7 +42,7 @@ public class Pokemon {
         this.estado = EstadoPokemon.ACTIVO;
     }
 
-    // ── Combate ───────────────────────────────────────────────────────────
+    // Combate
 
     /**
      * Ejecuta la animación/mensaje del movimiento.
@@ -74,8 +74,7 @@ public class Pokemon {
         vidaActual = vidaMaxima / 2;
     }
 
-    // ── Experiencia y nivel ───────────────────────────────────────────────
-
+    // Experiencia y nivel
     public void ganarExperiencia(int exp) {
         if (estaDebilitado()) return;
         experiencia += exp;
@@ -103,13 +102,10 @@ public class Pokemon {
     }
 
     public boolean evolucionar() {
-        if (evolucion == null || nivel < 16) return false;
-        System.out.println("¡" + nombre + " está evolucionando!");
-        return true;
+        return evolucion != null && nivel >= 16;// sin println — JuegoController muestra el mensaje
     }
 
-    // ── Movimientos ───────────────────────────────────────────────────────
-
+    // Movimientos
     public boolean agregarMovimiento(Movimiento movimiento) {
         if (movimientos.size() >= MAX_MOVIMIENTOS) return false;
         movimientos.add(movimiento);
@@ -122,7 +118,7 @@ public class Pokemon {
         return true;
     }
 
-    // ── Estado ────────────────────────────────────────────────────────────
+    // Estado
 
     public boolean estaDebilitado() {
         return estado == EstadoPokemon.DEBILIDAD;
@@ -136,13 +132,13 @@ public class Pokemon {
         return (double) vidaActual / vidaMaxima;
     }
 
-    // ── Setter ────────────────────────────────────────────────────────────
+    // Setters
 
     public void setEvolucion(Pokemon evolucion) {
         this.evolucion = evolucion;
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────
+    // Getters
 
     public int getId() {
         return id;

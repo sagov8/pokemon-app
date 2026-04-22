@@ -17,6 +17,8 @@ public class Batalla {
 
     private final Entrenador entrenador1;
     private final Entrenador entrenador2;
+    // Nuevo campo (junto a los otros atributos)
+    private Entrenador ganador;
 
     private Entrenador turnoActual;
     private EstadoBatalla estado;
@@ -171,7 +173,9 @@ public class Batalla {
         notificarTurno();
     }
 
+    // Actualizar finalizarBatalla para registrarlo
     private void finalizarBatalla(Entrenador ganador, Entrenador perdedor) {
+        this.ganador = ganador;
         estado = EstadoBatalla.FINALIZADO;
         ganador.ganarDinero(RECOMPENSA_DINERO);
         notificarFin(ganador, perdedor);
@@ -202,6 +206,21 @@ public class Batalla {
         if (entrenador2.pokemonActivo().isEmpty()) {
             throw new IllegalStateException(entrenador2.getNombre() + " no tiene pokemon activos.");
         }
+    }
+
+    // Métodos nuevos
+    public void pasarTurno() {
+        if (estado == EstadoBatalla.FINALIZADO) return;
+        cambiarTurno();
+    }
+
+    public void rendirse() {
+        if (estado == EstadoBatalla.FINALIZADO) return;
+        finalizarBatalla(rival(), turnoActual);
+    }
+
+    public Optional<Entrenador> getGanador() {
+        return Optional.ofNullable(ganador);
     }
 
     // ── Getters ───────────────────────────────────────────────────────────

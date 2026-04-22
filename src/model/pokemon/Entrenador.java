@@ -25,6 +25,9 @@ public class Entrenador {
         this.dinero = dinero;
     }
 
+    // todo: Crear entrenador
+
+
     // Equipo
 
     public boolean agregarPokemonEquipo(Pokemon pokemon) {
@@ -84,6 +87,19 @@ public class Entrenador {
 
     public boolean usarObjeto(int idObjeto, Pokemon objetivo) {
         return inventario.usarObjeto(idObjeto, objetivo);
+    }
+
+    public boolean evolucionarPokemon(Pokemon pokemon) {
+        int idx = equipoActivo.indexOf(pokemon);
+        if (idx == -1) return false;
+        if (!pokemon.evolucionar()) return false;
+        equipoActivo.set(idx, pokemon.getEvolucion());
+        return true;
+    }
+
+    /** Solo para uso de GameRepository al cargar una partida. */
+    public void agregarAlAlmacenamiento(Pokemon pokemon) {
+        almacenamiento.add(pokemon);
     }
 
     // Getters
