@@ -11,7 +11,7 @@ public class ObjetoCatalogo {
 
     private ObjetoCatalogo() {}
 
-    // Instancias compartidas — seguro porque Objeto es record (inmutable)
+    // Instancias compartidas
     public static final Objeto POCION       = new Objeto(1, "Poción",
             "Restaura 20 HP al pokemon activo",       TipoObjeto.POCION,       200);
     public static final Objeto SUPER_POCION = new Objeto(2, "Super Poción",
@@ -29,8 +29,8 @@ public class ObjetoCatalogo {
     public static Inventario inventarioInicial() {
         Inventario inv = new Inventario();
         inv.agregarObjeto(POCION);
-        inv.agregarObjeto(POCION);
-        inv.agregarObjeto(POCION);
+        inv.agregarObjeto(SUPER_POCION);
+        inv.agregarObjeto(REVIVIR);
         inv.agregarObjeto(POKEBOLA);
         return inv;
     }

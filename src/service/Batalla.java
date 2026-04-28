@@ -17,7 +17,6 @@ public class Batalla {
 
     private final Entrenador entrenador1;
     private final Entrenador entrenador2;
-    // Nuevo campo (junto a los otros atributos)
     private Entrenador ganador;
 
     private Entrenador turnoActual;
@@ -25,8 +24,7 @@ public class Batalla {
 
     private final List<BatallaObserver> observadores = new ArrayList<>();
 
-    // ── Constructor ───────────────────────────────────────────────────────
-
+    // Constructor
     public Batalla(Entrenador entrenador1, Entrenador entrenador2) {
         this.entrenador1 = entrenador1;
         this.entrenador2 = entrenador2;
@@ -46,8 +44,7 @@ public class Batalla {
         return vel1 >= vel2 ? entrenador1 : entrenador2;
     }
 
-    // ── Observer: registro ────────────────────────────────────────────────
-
+    // Observer: registro
     public void agregarObservador(BatallaObserver observador) {
         observadores.add(observador);
     }
@@ -56,7 +53,7 @@ public class Batalla {
         observadores.remove(observador);
     }
 
-    // ── Observer: notificaciones ──────────────────────────────────────────
+    // Observer: notificaciones
 
     private void notificarInicio() {
         Entrenador segundo = rival();
@@ -82,7 +79,7 @@ public class Batalla {
         observadores.forEach(o -> o.onBatallaFinalizada(ganador, perdedor));
     }
 
-    // ── API pública ───────────────────────────────────────────────────────
+    // API pública
 
     /**
      * Debe llamarse una vez después de registrar todos los observadores.
@@ -115,23 +112,23 @@ public class Batalla {
 
         validarMovimiento(atacante, movimiento);
 
-        // ── Cálculo de daño ───────────────────────────────────────────────
+        // Cálculo de daño
         int danioBase = atacante.atacar(movimiento);
         double modificador = (double) atacante.getAtaque() / Math.max(1, defensor.getDefensa());
         double efectividad = resolverEfectividad(movimiento, defensor);
         int danioFinal = (int) Math.max(1, danioBase * modificador * efectividad);
 
-        // ── Aplicar daño ──────────────────────────────────────────────────
+        // Aplicar daño
         defensor.recibirDanio(danioFinal);
         notificarMovimiento(atacante, defensor, movimiento, danioFinal, efectividad);
 
-        // ── Verificar debilitado ──────────────────────────────────────────
+        // Verificar debilitado
         if (defensor.estaDebilitado()) {
             notificarDebilitado(defensor, rivalActual);
             atacante.ganarExperiencia(danioFinal * EXP_POR_DANIO);
         }
 
-        // ── Verificar fin de batalla ──────────────────────────────────────
+        // Verificar fin de batalla
         if (!rivalActual.tieneEquipoVivo()) {
             finalizarBatalla(turnoActual, rivalActual);
             return;
@@ -162,8 +159,7 @@ public class Batalla {
         }
     }
 
-    // ── Helpers privados ──────────────────────────────────────────────────
-
+    // Helpers privados
     private Entrenador rival() {
         return turnoActual == entrenador1 ? entrenador2 : entrenador1;
     }
@@ -208,7 +204,6 @@ public class Batalla {
         }
     }
 
-    // Métodos nuevos
     public void pasarTurno() {
         if (estado == EstadoBatalla.FINALIZADO) return;
         cambiarTurno();
@@ -223,8 +218,7 @@ public class Batalla {
         return Optional.ofNullable(ganador);
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────
-
+    // Getters
     public Entrenador getTurnoActual() {
         return turnoActual;
     }

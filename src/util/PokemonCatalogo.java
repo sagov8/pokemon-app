@@ -66,6 +66,7 @@ public class PokemonCatalogo {
                 pokemon.agregarMovimiento(new CreadorMovimientoAire().prepararMovimiento());
                 pokemon.agregarMovimiento(new CreadorMovimientoFuego().prepararMovimiento());
             }
+            default -> throw new IllegalArgumentException("Tipo de pokemon desconocido: " + pokemon.getTipo());
         }
     }
 
@@ -113,8 +114,7 @@ public class PokemonCatalogo {
         return p;
     }
 
-    // ── Evoluciones ───────────────────────────────────────────────────────
-
+    // Evoluciones
     public static Pokemon crearCharmeleon() {
         Pokemon p = new Pokemon(11, "Charmeleon", TipoPokemon.FUEGO, 16, 155, 64, 58, 80);
         asignarMovimientosPorTipo(p);

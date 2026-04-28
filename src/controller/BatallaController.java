@@ -18,8 +18,6 @@ public class BatallaController {
         this.vista = vista;
     }
 
-    // ── Entrada pública ───────────────────────────────────────────────────
-
     /** Retorna true si el jugador ganó la batalla. */
     public boolean iniciarBatalla(Entrenador jugador, Entrenador rival) {
         Batalla batalla = new Batalla(jugador, rival);
@@ -41,8 +39,7 @@ public class BatallaController {
                 .orElse(false);
     }
 
-    // ── Turno del jugador ─────────────────────────────────────────────────
-
+    // Turno del jugador
     private void manejarTurnoJugador(Batalla batalla, Entrenador jugador, Entrenador rival) {
         notificarCambioAutomatico(jugador);
         vista.mostrarEstadoBatalla(jugador, rival);
@@ -123,8 +120,7 @@ public class BatallaController {
         }
     }
 
-    // ── Turno del rival (IA simple) ───────────────────────────────────────
-
+    // Turno del rival con IA simple: elige un movimiento al azar de su pokemon activo.
     private void manejarTurnoRival(Batalla batalla, Entrenador rival) {
         Pokemon pokemon = rival.pokemonActivo().orElse(null);
         if (pokemon == null) return;

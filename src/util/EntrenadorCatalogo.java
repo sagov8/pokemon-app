@@ -34,13 +34,11 @@ public class EntrenadorCatalogo {
     private static Entrenador crearGary() {
         Entrenador gary = new Entrenador(10, "Gary", 500);
         gary.agregarPokemonEquipo(PokemonCatalogo.crearSquirtle());
-        gary.agregarPokemonEquipo(PokemonCatalogo.crearPidgey());
         return gary;
     }
 
     private static Entrenador crearMisty() {
         Entrenador misty = new Entrenador(11, "Misty", 800);
-        misty.agregarPokemonEquipo(PokemonCatalogo.crearSquirtle());
         misty.agregarPokemonEquipo(PokemonCatalogo.crearAbra());
         return misty;
     }
@@ -49,7 +47,6 @@ public class EntrenadorCatalogo {
         Entrenador brock = new Entrenador(12, "Brock", 1200);
         brock.agregarPokemonEquipo(PokemonCatalogo.crearGeodude());
         brock.agregarPokemonEquipo(PokemonCatalogo.crearPikachu());
-        brock.agregarPokemonEquipo(PokemonCatalogo.crearPidgey());
         return brock;
     }
 

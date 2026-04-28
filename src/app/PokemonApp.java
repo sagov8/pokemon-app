@@ -2,8 +2,6 @@ package app;
 
 import controller.BatallaController;
 import controller.JuegoController;
-import factory.*;
-import model.pokemon.*;
 import persistence.GameRepository;
 import view.ConsoleView;
 

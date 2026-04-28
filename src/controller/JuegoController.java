@@ -144,7 +144,6 @@ public class JuegoController {
     }
 
     // Elección de rival
-
     private Entrenador elegirRival() {
         List<Entrenador> rivales = EntrenadorCatalogo.getRivalesPredefinidos();
         vista.mostrarRivales(rivales);
@@ -158,20 +157,17 @@ public class JuegoController {
         return EntrenadorCatalogo.crearRival(opcion - 1);
     }
 
-    // ── Ver equipo ────────────────────────────────────────────────────────
-
+    // Ver equipo
     private void verEquipo() {
         vista.mostrarEquipoDetallado(jugador);
     }
 
-// ── Ver inventario ────────────────────────────────────────────────────
-
+    // Ver inventario
     private void verInventario() {
         vista.mostrarInventarioDetallado(jugador.getInventario());
     }
 
-// ── Usar objeto fuera de batalla ──────────────────────────────────────
-
+    // Usar objeto fuera de batalla
     private void usarObjetoFueraBatalla() {
         Inventario inv = jugador.getInventario();
 
@@ -225,7 +221,7 @@ public class JuegoController {
         return vista.pedirPokemonDelEquipo(candidatos, titulo);
     }
 
-    // Métodos nuevos
+    // Métodos para manejar carga y guardado de partida
     private void cargarPartida() {
         try {
             jugador = repositorio.cargar();
@@ -245,7 +241,5 @@ public class JuegoController {
             vista.mostrarMensaje("Error al guardar la partida: " + e.getMessage());
         }
     }
-
-    // Actualizar manejarPostBatalla() para guardar automáticamente al ganar
 
 }

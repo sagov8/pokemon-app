@@ -26,7 +26,6 @@ public class Entrenador {
     }
 
     // Equipo
-
     public boolean agregarPokemonEquipo(Pokemon pokemon) {
         if (equipoActivo.size() >= MAX_EQUIPO) return false;
         equipoActivo.add(pokemon);
@@ -69,7 +68,6 @@ public class Entrenador {
     }
 
     // Economía
-
     public void ganarDinero(double cantidad) {
         if (cantidad > 0) dinero += cantidad;
     }
@@ -100,7 +98,6 @@ public class Entrenador {
     }
 
     // Getters
-
     public int getId() {
         return id;
     }

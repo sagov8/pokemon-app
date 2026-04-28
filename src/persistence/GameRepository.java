@@ -46,8 +46,7 @@ public class GameRepository {
         Files.writeString(Path.of(FILE), sb.toString());
     }
 
-    // ── Cargar ────────────────────────────────────────────────────────────
-
+    // Cargar
     public Entrenador cargar() throws IOException {
         List<String> lineas = Files.readAllLines(Path.of(FILE));
 
@@ -81,8 +80,7 @@ public class GameRepository {
         return Files.exists(Path.of(FILE));
     }
 
-    // ── Serialización ─────────────────────────────────────────────────────
-
+    // Serialización
     private String serializar(Pokemon p) {
         int evolucionId = p.getEvolucion() != null ? p.getEvolucion().getId() : -1;
         return String.join(",",

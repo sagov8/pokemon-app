@@ -15,7 +15,6 @@ public interface BatallaObserver {
     /**
      * Se dispara después de ejecutar un movimiento.
      * Incluye el daño final ya aplicado y la efectividad para mostrar mensajes
-     * como "¡Es súper efectivo!" desde la vista sin lógica en ella.
      */
     void onMovimientoUsado(Pokemon atacante, Pokemon defensor,
                            Movimiento movimiento, int danioFinal, double efectividad);
