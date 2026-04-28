@@ -16,7 +16,6 @@ El jugador puede crear una nueva partida, elegir un Pokémon inicial, explorar p
 - [Diagramas](#diagramas)
 - [Persistencia](#persistencia)
 - [Patrones de diseño usados](#patrones-de-diseño-usados)
-- [Posibles mejoras](#posibles-mejoras)
 
 ## Descripción
 
@@ -560,24 +559,9 @@ Estos permiten crear movimientos concretos sin acoplar directamente el catálogo
 
 La clase `GameRepository` centraliza la lógica de guardado y carga de partidas.
 
-## Posibles mejoras
-
-Algunas mejoras que podrían implementarse en futuras versiones:
-
-- Agregar sistema completo de captura con Pokébolas.
-- Implementar tienda para comprar objetos.
-- Añadir más Pokémon, tipos y movimientos.
-- Guardar también la experiencia exacta de cada Pokémon.
-- Crear pruebas unitarias para batalla, inventario y persistencia.
-- Migrar la persistencia a JSON o base de datos.
-- Agregar una interfaz gráfica.
-- Implementar dificultad progresiva real para rivales.
-- Agregar sistema de estados alterados como veneno, parálisis o sueño.
-- Separar la lógica de entrada/salida para facilitar pruebas automatizadas.
-
 ## Autor
 
-Proyecto desarrollado como práctica de programación orientada a objetos en Java.
+Valentina Paz y Santiago Vivas
 
 ## Licencia
 
