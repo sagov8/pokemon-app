@@ -19,8 +19,7 @@ public class GameRepository {
         new File(DIR).mkdirs();
     }
 
-    // ── Guardar ───────────────────────────────────────────────────────────
-
+    // Guardar
     public void guardar(Entrenador entrenador) throws IOException {
         StringBuilder sb = new StringBuilder();
 
