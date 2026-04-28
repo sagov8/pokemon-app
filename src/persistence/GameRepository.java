@@ -70,6 +70,7 @@ public class GameRepository {
                         deserializar(Arrays.copyOfRange(partes, 1, partes.length)));
                 case "INVENTARIO" -> cargarInventario(
                         entrenador.getInventario(), partes);
+                default -> System.err.println("Línea desconocida en el archivo de guardado: " + linea);
             }
         }
 

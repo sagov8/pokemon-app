@@ -34,14 +34,15 @@ public class JuegoController {
             switch (op) {
                 case 1 -> cargarPartida();
                 case 2 -> nuevaPartida();
-                case 3 -> { return; }
+                default -> vista.mostrarMensaje("Opción inválida. Iniciando nueva partida...");
             }
         } else {
             int op = vista.pedirOpcionMenu("Menú principal",
                     "Nueva partida", "Salir");
-            switch (op) {
-                case 1 -> nuevaPartida();
-                case 2 -> { return; }
+            if (op == 1) {
+                nuevaPartida();
+            } else {
+                vista.mostrarMensaje("opción invalida");
             }
         }
     }
@@ -97,6 +98,7 @@ public class JuegoController {
                 case 4 -> usarObjetoFueraBatalla();
                 case 5 -> guardarPartida();
                 case 6 -> corriendo = false;
+                default -> vista.mostrarMensaje("Opción no válida. Intenta de nuevo.");
             }
         }
         vista.mostrarMensaje("\n¡Hasta la próxima, " + jugador.getNombre() + "!");

@@ -10,6 +10,7 @@ import java.util.List;
 
 public class BatallaController {
 
+    private static final java.util.Random random = new java.util.Random();
     private final ConsoleView vista;
     private Pokemon ultimoPokemonJugador;
 
@@ -54,6 +55,7 @@ public class BatallaController {
             case 2 -> manejarObjeto(batalla, jugador);
             case 3 -> manejarCambio(batalla, jugador);
             case 4 -> manejarRendicion(batalla);
+            default -> throw new IllegalStateException("Valor inesperado: " + opcion);
         }
     }
 
@@ -130,7 +132,7 @@ public class BatallaController {
         List<Movimiento> movimientos = pokemon.getMovimientos();
         if (movimientos.isEmpty()) return;
 
-        int idx = (int) (Math.random() * movimientos.size());
+        int idx = random.nextInt(movimientos.size());
         batalla.ejecutarTurno(movimientos.get(idx));
     }
 }

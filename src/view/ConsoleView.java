@@ -18,7 +18,7 @@ public class ConsoleView implements BatallaObserver{
             
             ╔══════════════════════════════════════════╗
             ║          POKEMON CONSOLE  v1.0           ║
-            ║     Atrapa, entrena y conquista          ║
+            ║     Juega Pokemon desde tu terminal      ║
             ╚══════════════════════════════════════════╝
             """);
     }

@@ -25,9 +25,6 @@ public class Entrenador {
         this.dinero = dinero;
     }
 
-    // todo: Crear entrenador
-
-
     // Equipo
 
     public boolean agregarPokemonEquipo(Pokemon pokemon) {
