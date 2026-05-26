@@ -181,7 +181,7 @@ public class Batalla {
         try {
             TipoPokemon tipoMovimiento = TipoPokemon.desdeCadena(movimiento.getTipo());
             return tipoMovimiento.efectividadContra(defensor.getTipo());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException _) {
             // Si el tipo del movimiento no está en el enum, no hay modificador
             return 1.0;
         }

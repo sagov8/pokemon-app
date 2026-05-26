@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class ConsoleView implements BatallaObserver{
     private final Scanner scanner = new Scanner(System.in);
+    private static final String ELIGE_TEXT = "Elige: ";
 
     public void mostrarBienvenida() {
         System.out.println("""
@@ -50,7 +51,7 @@ public class ConsoleView implements BatallaObserver{
                     p.getDefensa());
             System.out.printf("     Movimientos: %s%n%n", movs);
         }
-        System.out.print("Elige: ");
+        System.out.print(ELIGE_TEXT);
     }
 
     public void mostrarRivales(List<Entrenador> rivales) {
@@ -65,7 +66,7 @@ public class ConsoleView implements BatallaObserver{
         }
         System.out.printf("  %d. Rival aleatorio (escalado a tu nivel)%n%n",
                 rivales.size() + 1);
-        System.out.print("Elige: ");
+        System.out.print(ELIGE_TEXT);
     }
 
     public void mostrarEquipoResumen(Entrenador entrenador) {
@@ -135,7 +136,7 @@ public class ConsoleView implements BatallaObserver{
                     p.getVidaActual(), p.getVidaMaxima(), estado);
         }
         System.out.printf("  %d. Cancelar%n", equipo.size() + 1);
-        System.out.print("Elige: ");
+        System.out.print(ELIGE_TEXT);
         int op = leerOpcion(equipo.size() + 1);
         return op == equipo.size() + 1 ? null : equipo.get(op - 1);
     }
@@ -237,7 +238,7 @@ public class ConsoleView implements BatallaObserver{
                 int op = Integer.parseInt(scanner.nextLine().trim());
                 if (op >= 1 && op <= max) return op;
                 System.out.print("Elige entre 1 y " + max + ": ");
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException _) {
                 System.out.print("Solo números. Opción: ");
             }
         }
@@ -255,7 +256,7 @@ public class ConsoleView implements BatallaObserver{
             System.out.printf("  %d. %-14s — %s%n", i + 1, o.nombre(), o.descripcion());
         }
         System.out.printf("  %d. Cancelar%n%n", objetos.size() + 1);
-        System.out.print("Elige: ");
+        System.out.print(ELIGE_TEXT);
         int op = leerOpcion(objetos.size() + 1);
         return op == objetos.size() + 1 ? null : objetos.get(op - 1);
     }
@@ -277,7 +278,7 @@ public class ConsoleView implements BatallaObserver{
             mostrarBarraVida(p);
         }
         System.out.printf("  %d. Cancelar%n%n", opciones.size() + 1);
-        System.out.print("Elige: ");
+        System.out.print(ELIGE_TEXT);
         int op = leerOpcion(opciones.size() + 1);
         return op == opciones.size() + 1 ? null : opciones.get(op - 1);
     }

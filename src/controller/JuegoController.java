@@ -15,6 +15,8 @@ public class JuegoController {
     private final BatallaController batallaController;
     private final GameRepository repositorio;
 
+    private static final String SALIR_TEXT = "Salir";
+
     private Entrenador jugador;
 
     public JuegoController(ConsoleView vista, BatallaController batallaController, GameRepository repositorio) {
@@ -30,7 +32,7 @@ public class JuegoController {
 
         if (repositorio.existeGuardado()) {
             int op = vista.pedirOpcionMenu("Se encontró una partida guardada",
-                    "Continuar partida", "Nueva partida", "Salir");
+                    "Continuar partida", "Nueva partida", SALIR_TEXT);
             switch (op) {
                 case 1 -> cargarPartida();
                 case 2 -> nuevaPartida();
@@ -38,7 +40,7 @@ public class JuegoController {
             }
         } else {
             int op = vista.pedirOpcionMenu("Menú principal",
-                    "Nueva partida", "Salir");
+                    "Nueva partida", SALIR_TEXT);
             if (op == 1) {
                 nuevaPartida();
             } else {
@@ -89,7 +91,7 @@ public class JuegoController {
                     "Inventario",
                     "Usar objeto",
                     "Guardar partida",
-                    "Salir");
+                    SALIR_TEXT);
 
             switch (opcion) {
                 case 1 -> explorar();
@@ -227,7 +229,7 @@ public class JuegoController {
             jugador = repositorio.cargar();
             vista.mostrarMensaje("\n¡Bienvenido de vuelta, " + jugador.getNombre() + "!");
             bucleJuego();
-        } catch (IOException e) {
+        } catch (IOException _) {
             vista.mostrarMensaje("Error al cargar la partida. Iniciando nueva...");
             nuevaPartida();
         }
