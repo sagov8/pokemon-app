@@ -62,4 +62,8 @@ public class Inventario {
                 .append(o.descripcion()).append("\n"));
         return sb.toString();
     }
+
+    public boolean eliminarObjeto(int idObjeto) {
+        return objetos.removeIf(objeto -> objeto.id() == idObjeto);
+    }
 }

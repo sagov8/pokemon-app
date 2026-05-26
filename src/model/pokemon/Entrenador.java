@@ -126,4 +126,11 @@ public class Entrenador {
     public String toString() {
         return "Entrenador %s (Nv. promedio: %d | $%.0f)".formatted(nombre, nivelPromedio(), dinero);
     }
+
+    public Pokemon getPrimerPokemonVivo() {
+        return equipoActivo.stream()
+                .filter(p -> !p.estaDebilitado())
+                .findFirst()
+                .orElse(null);
+    }
 }

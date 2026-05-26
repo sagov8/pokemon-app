@@ -3,6 +3,7 @@ package util;
 import factory.*;
 import model.pokemon.*;
 import java.util.List;
+import java.util.Random;
 
 public class PokemonCatalogo {
 
@@ -21,6 +22,15 @@ public class PokemonCatalogo {
             case 5  -> crearAbra();
             case 6  -> crearPidgey();
             default -> throw new IllegalArgumentException("Pokemon desconocido: " + id);
+        };
+    }
+
+    public static Pokemon crearPorId(int id, int nivel) {
+        return switch (id) {
+            case 1 -> new Pokemon(1, "Bulbasaur", TipoPokemon.TIERRA, nivel, 45, 49, 49, 45);
+            case 2 -> new Pokemon(2, "Charmander", TipoPokemon.FUEGO, nivel, 39, 52, 43, 65);
+            case 3 -> new Pokemon(3, "Squirtle", TipoPokemon.AGUA, nivel, 44, 48, 65, 43);
+            default -> throw new IllegalArgumentException("Pokemon no encontrado con id: " + id);
         };
     }
 
@@ -149,5 +159,23 @@ public class PokemonCatalogo {
         Pokemon p = new Pokemon(16, "Pidgeotto", TipoPokemon.AIRE, 16, 145, 60, 55, 71);
         asignarMovimientosPorTipo(p);
         return p;
+    }
+
+    public static Pokemon crearSalvaje() {
+        List<Pokemon> disponibles = getTodos();
+
+        int indice = new Random().nextInt(disponibles.size());
+
+        Pokemon base = disponibles.get(indice);
+
+        return crearPorId(base.getId(), 5);
+    }
+
+    public static List<Pokemon> getTodos() {
+        return List.of(
+                crearPorId(1),
+                crearPorId(2),
+                crearPorId(3)
+        );
     }
 }

@@ -9,6 +9,7 @@ import view.ConsoleView;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 public class JuegoController {
     private final ConsoleView vista;
@@ -87,6 +88,7 @@ public class JuegoController {
         while (corriendo) {
             int opcion = vista.pedirOpcionMenu("¿Qué quieres hacer?",
                     "Explorar (nueva batalla)",
+                    "Luchar vs Pokemon salvaje",
                     "Ver equipo",
                     "Inventario",
                     "Usar objeto",
@@ -95,11 +97,12 @@ public class JuegoController {
 
             switch (opcion) {
                 case 1 -> explorar();
-                case 2 -> verEquipo();
-                case 3 -> verInventario();
-                case 4 -> usarObjetoFueraBatalla();
-                case 5 -> guardarPartida();
-                case 6 -> corriendo = false;
+                case 2 -> lucharVsPokemonSalvaje();
+                case 3 -> verEquipo();
+                case 4 -> verInventario();
+                case 5 -> usarObjetoFueraBatalla();
+                case 6 -> guardarPartida();
+                case 7 -> corriendo = false;
                 default -> vista.mostrarMensaje("Opción no válida. Intenta de nuevo.");
             }
         }
@@ -244,4 +247,223 @@ public class JuegoController {
         }
     }
 
+
+    private boolean intentarCaptura(Pokemon salvaje) {
+        Inventario inventario = jugador.getInventario();
+
+        Objeto pokebola = inventario.getObjetos().stream()
+                .filter(o -> o.tipo() == Objeto.TipoObjeto.POKEBOLA)
+                .findFirst()
+                .orElse(null);
+
+        if (pokebola == null) {
+            vista.mostrarMensaje("No tienes Pokébolas.");
+            return false;
+        }
+
+        inventario.eliminarObjeto(pokebola.id());
+
+        double porcentajeVida = salvaje.porcentajeVida();
+
+        double probabilidadCaptura;
+
+        if (porcentajeVida <= 0.25) {
+            probabilidadCaptura = 0.75;
+        } else if (porcentajeVida <= 0.50) {
+            probabilidadCaptura = 0.50;
+        } else {
+            probabilidadCaptura = 0.25;
+        }
+
+        return Math.random() < probabilidadCaptura;
+    }
+
+    private void lucharVsPokemonSalvaje() {
+        if (!jugador.tieneEquipoVivo()) {
+            vista.mostrarMensaje("No tienes pokemon disponibles para batallar.");
+            return;
+        }
+
+        Pokemon salvaje = PokemonCatalogo.crearSalvaje();
+
+        vista.mostrarMensaje("\n¡Un " + salvaje.getNombre() + " salvaje apareció!");
+
+        Pokemon pokemonJugador = jugador.getPrimerPokemonVivo();
+
+        boolean terminado = false;
+
+        while (!terminado && !salvaje.estaDebilitado() && jugador.tieneEquipoVivo()) {
+            vista.mostrarMensaje("\nTu pokemon:");
+            vista.mostrarBarraVida(pokemonJugador);
+
+            vista.mostrarMensaje("\nPokemon salvaje:");
+            vista.mostrarBarraVida(salvaje);
+
+            int opcion = vista.pedirOpcionMenu(
+                    "¿Qué quieres hacer?",
+                    "Atacar",
+                    "Lanzar Pokébola",
+                    "Cambiar Pokémon",
+                    "Huir"
+            );
+
+            switch (opcion) {
+                case 1 -> {
+                    terminado = manejarAtaqueSalvaje(pokemonJugador, salvaje);
+
+                    if (!terminado && pokemonJugador.estaDebilitado()) {
+                        pokemonJugador = cambiarANuevoPokemon(pokemonJugador);
+
+                        if (pokemonJugador == null) {
+                            vista.mostrarMensaje("No tienes más pokemon disponibles.");
+                            terminado = true;
+                        }
+                    }
+                }
+
+                case 2 -> {
+                    boolean capturado = manejarCaptura(salvaje, pokemonJugador);
+
+                    if (capturado) {
+                        terminado = true;
+                    } else if (pokemonJugador.estaDebilitado()) {
+                        pokemonJugador = cambiarANuevoPokemon(pokemonJugador);
+
+                        if (pokemonJugador == null) {
+                            vista.mostrarMensaje("No tienes más pokemon disponibles.");
+                            terminado = true;
+                        }
+                    }
+                }
+
+                case 3 -> pokemonJugador = cambiarPokemon(pokemonJugador);
+
+                case 4 -> {
+                    vista.mostrarMensaje("Escapaste del Pokémon salvaje.");
+                    terminado = true;
+                }
+
+                default -> vista.mostrarMensaje("Opción no válida.");
+            }
+        }
+    }
+
+    private boolean manejarAtaqueSalvaje(Pokemon atacante, Pokemon salvaje) {
+        atacarSalvaje(atacante, salvaje);
+
+        if (salvaje.estaDebilitado()) {
+            vista.mostrarMensaje("¡" + salvaje.getNombre() + " se debilitó!");
+            atacante.ganarExperiencia(80);
+            verificarEvoluciones();
+            guardarPartida();
+            return true;
+        }
+
+        ataqueDelSalvaje(salvaje, atacante);
+
+        return false;
+    }
+
+    private boolean manejarCaptura(Pokemon salvaje, Pokemon pokemonJugador) {
+        boolean capturado = intentarCaptura(salvaje);
+
+        if (capturado) {
+            jugador.agregarPokemonEquipo(salvaje);
+            vista.mostrarMensaje("¡Capturaste a " + salvaje.getNombre() + "!");
+            guardarPartida();
+            return true;
+        }
+
+        vista.mostrarMensaje("¡Oh no! " + salvaje.getNombre() + " escapó.");
+
+        ataqueDelSalvaje(salvaje, pokemonJugador);
+
+        return false;
+    }
+
+    private void atacarSalvaje(Pokemon atacante, Pokemon salvaje) {
+        List<Movimiento> movimientos = atacante.getMovimientos();
+
+        int opcion = vista.pedirMovimiento(movimientos) - 1;
+
+        Movimiento movimiento = movimientos.get(opcion);
+
+        int danioBase = atacante.atacar(movimiento);
+
+        int danioFinal = Math.max(
+                1,
+                danioBase + atacante.getAtaque() - salvaje.getDefensa()
+        );
+
+        salvaje.recibirDanio(danioFinal);
+
+        vista.mostrarMensaje(
+                atacante.getNombre() + " usó " + movimiento.getNombre()
+                        + " e hizo " + danioFinal + " de daño."
+        );
+
+        vista.mostrarBarraVida(salvaje);
+    }
+
+    private void ataqueDelSalvaje(Pokemon salvaje, Pokemon pokemonJugador) {
+        if (salvaje.estaDebilitado()) return;
+
+        List<Movimiento> movimientos = salvaje.getMovimientos();
+
+        if (movimientos.isEmpty()) {
+            vista.mostrarMensaje(salvaje.getNombre() + " no tiene movimientos.");
+            return;
+        }
+
+        Movimiento movimiento = movimientos.get(new Random().nextInt(movimientos.size()));
+
+        int danioBase = salvaje.atacar(movimiento);
+
+        int danioFinal = Math.max(
+                1,
+                danioBase + salvaje.getAtaque() - pokemonJugador.getDefensa()
+        );
+
+        pokemonJugador.recibirDanio(danioFinal);
+
+        vista.mostrarMensaje(
+                salvaje.getNombre() + " usó " + movimiento.getNombre()
+                        + " e hizo " + danioFinal + " de daño."
+        );
+
+        vista.mostrarBarraVida(pokemonJugador);
+    }
+
+    private Pokemon cambiarPokemon(Pokemon pokemonActivo) {
+        Pokemon elegido = vista.pedirPokemonParaCambio(
+                jugador.getEquipoActivo(),
+                pokemonActivo
+        );
+
+        if (elegido == null) {
+            vista.mostrarMensaje("No cambiaste de Pokémon.");
+            return pokemonActivo;
+        }
+
+        vista.mostrarMensaje("¡Adelante " + elegido.getNombre() + "!");
+        return elegido;
+    }
+
+    private Pokemon cambiarANuevoPokemon(Pokemon pokemonActual) {
+        if (!jugador.tieneEquipoVivo()) {
+            return null;
+        }
+
+        Pokemon nuevo = vista.pedirPokemonParaCambio(
+                jugador.getEquipoActivo(),
+                pokemonActual
+        );
+
+        if (nuevo == null) {
+            return jugador.getPrimerPokemonVivo();
+        }
+
+        vista.mostrarMensaje("¡Adelante " + nuevo.getNombre() + "!");
+        return nuevo;
+    }
 }
