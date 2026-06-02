@@ -238,7 +238,7 @@ public class ConsoleView implements BatallaObserver{
                 int op = Integer.parseInt(scanner.nextLine().trim());
                 if (op >= 1 && op <= max) return op;
                 System.out.print("Elige entre 1 y " + max + ": ");
-            } catch (NumberFormatException _) {
+            } catch (NumberFormatException e) {
                 System.out.print("Solo números. Opción: ");
             }
         }
@@ -291,5 +291,21 @@ public class ConsoleView implements BatallaObserver{
                 actual.getVidaMaxima(), siguiente.getVidaMaxima());
         return pedirOpcionMenu("¿Aceptas la evolución?",
                 "Sí, evolucionar", "No, por ahora no") == 1;
+    }
+
+    public void mostrarAlmacenamiento(Entrenador entrenador) {
+        System.out.println("\n=== Pokémon Almacenados en el PC ===");
+        List<Pokemon> almacen = entrenador.getAlmacenamiento();
+        if (almacen.isEmpty()) {
+            System.out.println("  No tienes Pokémon en el PC.");
+            return;
+        }
+        for (int i = 0; i < almacen.size(); i++) {
+            Pokemon p = almacen.get(i);
+            String estado = p.estaDebilitado() ? " [DEBILITADO]" : "";
+            System.out.printf("  %d. %-12s [%-10s] Nv.%d  HP: %d/%d%s%n",
+                    i + 1, p.getNombre(), p.getTipo(), p.getNivel(),
+                    p.getVidaActual(), p.getVidaMaxima(), estado);
+        }
     }
 }

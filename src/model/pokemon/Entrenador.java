@@ -84,6 +84,14 @@ public class Entrenador {
         return inventario.usarObjeto(idObjeto, objetivo);
     }
 
+    public void cambiarPokemonActivo(Pokemon pokemon) {
+        int idx = equipoActivo.indexOf(pokemon);
+        if (idx > 0) {
+            equipoActivo.remove(idx);
+            equipoActivo.add(0, pokemon);
+        }
+    }
+
     public boolean evolucionarPokemon(Pokemon pokemon) {
         int idx = equipoActivo.indexOf(pokemon);
         if (idx == -1) return false;

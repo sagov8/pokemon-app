@@ -92,6 +92,7 @@ public class JuegoController {
                     "Ver equipo",
                     "Inventario",
                     "Usar objeto",
+                    "Acceder al PC de almacenamiento",
                     "Guardar partida",
                     SALIR_TEXT);
 
@@ -101,12 +102,79 @@ public class JuegoController {
                 case 3 -> verEquipo();
                 case 4 -> verInventario();
                 case 5 -> usarObjetoFueraBatalla();
-                case 6 -> guardarPartida();
-                case 7 -> corriendo = false;
+                case 6 -> accederPC();
+                case 7 -> guardarPartida();
+                case 8 -> corriendo = false;
                 default -> vista.mostrarMensaje("Opción no válida. Intenta de nuevo.");
             }
         }
         vista.mostrarMensaje("\n¡Hasta la próxima, " + jugador.getNombre() + "!");
+    }
+
+    private void accederPC() {
+        boolean enPC = true;
+        while (enPC) {
+            int opcion = vista.pedirOpcionMenu("PC de Almacenamiento de Pokémon",
+                    "Ver Pokémon almacenados",
+                    "Depositar Pokémon en el PC",
+                    "Retirar Pokémon del PC",
+                    "Volver al menú anterior");
+            switch (opcion) {
+                case 1 -> verAlmacenamiento();
+                case 2 -> depositarPokemon();
+                case 3 -> retirarPokemon();
+                case 4 -> enPC = false;
+                default -> vista.mostrarMensaje("Opción no válida.");
+            }
+        }
+    }
+
+    private void verAlmacenamiento() {
+        vista.mostrarAlmacenamiento(jugador);
+    }
+
+    private void depositarPokemon() {
+        List<Pokemon> equipo = jugador.getEquipoActivo();
+        if (equipo.size() <= 1) {
+            vista.mostrarMensaje("No puedes depositar tu último Pokémon. Debes tener al menos uno en tu equipo.");
+            return;
+        }
+
+        Pokemon elegido = vista.pedirPokemonDelEquipo(equipo, "Elige un Pokémon para depositar en el PC");
+        if (elegido == null) {
+            return;
+        }
+
+        jugador.almacenarPokemon(elegido);
+        vista.mostrarMensaje("¡" + elegido.getNombre() + " ha sido almacenado en el PC!");
+        guardarPartida();
+    }
+
+    private void retirarPokemon() {
+        List<Pokemon> almacen = jugador.getAlmacenamiento();
+        if (almacen.isEmpty()) {
+            vista.mostrarMensaje("No tienes Pokémon almacenados en el PC.");
+            return;
+        }
+
+        List<Pokemon> equipo = jugador.getEquipoActivo();
+        if (equipo.size() >= 6) {
+            vista.mostrarMensaje("Tu equipo está lleno (máximo 6 Pokémon). Deposita alguno antes de retirar otro.");
+            return;
+        }
+
+        Pokemon elegido = vista.pedirPokemonDelEquipo(almacen, "Elige un Pokémon para retirar del PC");
+        if (elegido == null) {
+            return;
+        }
+
+        boolean exito = jugador.recuperarPokemon(elegido);
+        if (exito) {
+            vista.mostrarMensaje("¡" + elegido.getNombre() + " se ha unido a tu equipo activo!");
+            guardarPartida();
+        } else {
+            vista.mostrarMensaje("No se pudo retirar a " + elegido.getNombre() + ".");
+        }
     }
 
     private void explorar() {
@@ -232,7 +300,7 @@ public class JuegoController {
             jugador = repositorio.cargar();
             vista.mostrarMensaje("\n¡Bienvenido de vuelta, " + jugador.getNombre() + "!");
             bucleJuego();
-        } catch (IOException _) {
+        } catch (IOException e) {
             vista.mostrarMensaje("Error al cargar la partida. Iniciando nueva...");
             nuevaPartida();
         }
@@ -368,8 +436,13 @@ public class JuegoController {
         boolean capturado = intentarCaptura(salvaje);
 
         if (capturado) {
-            jugador.agregarPokemonEquipo(salvaje);
-            vista.mostrarMensaje("¡Capturaste a " + salvaje.getNombre() + "!");
+            boolean agregado = jugador.agregarPokemonEquipo(salvaje);
+            if (agregado) {
+                vista.mostrarMensaje("¡Capturaste a " + salvaje.getNombre() + "!");
+            } else {
+                jugador.agregarAlAlmacenamiento(salvaje);
+                vista.mostrarMensaje("¡Capturaste a " + salvaje.getNombre() + "! Tu equipo está lleno, se envió al PC de almacenamiento.");
+            }
             guardarPartida();
             return true;
         }
@@ -446,6 +519,7 @@ public class JuegoController {
         }
 
         vista.mostrarMensaje("¡Adelante " + elegido.getNombre() + "!");
+        jugador.cambiarPokemonActivo(elegido); // Mover al frente
         return elegido;
     }
 
@@ -460,10 +534,15 @@ public class JuegoController {
         );
 
         if (nuevo == null) {
-            return jugador.getPrimerPokemonVivo();
+            Pokemon primerVivo = jugador.getPrimerPokemonVivo();
+            if (primerVivo != null) {
+                jugador.cambiarPokemonActivo(primerVivo); // Mover al frente
+            }
+            return primerVivo;
         }
 
         vista.mostrarMensaje("¡Adelante " + nuevo.getNombre() + "!");
+        jugador.cambiarPokemonActivo(nuevo); // Mover al frente
         return nuevo;
     }
 }

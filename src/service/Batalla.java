@@ -153,6 +153,9 @@ public class Batalla {
             throw new IllegalArgumentException("Pokemon inválido para el cambio.");
         }
 
+        // Efectuar el cambio en el equipo del entrenador
+        turnoActual.cambiarPokemonActivo(nuevo);
+
         // Si el activo no está debilitado, cambiar gasta el turno
         if (!activoDebilitado) {
             cambiarTurno();
@@ -181,7 +184,7 @@ public class Batalla {
         try {
             TipoPokemon tipoMovimiento = TipoPokemon.desdeCadena(movimiento.getTipo());
             return tipoMovimiento.efectividadContra(defensor.getTipo());
-        } catch (IllegalArgumentException _) {
+        } catch (IllegalArgumentException e) {
             // Si el tipo del movimiento no está en el enum, no hay modificador
             return 1.0;
         }

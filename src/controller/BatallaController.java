@@ -64,6 +64,7 @@ public class BatallaController {
                 && !actual.equals(ultimoPokemonJugador)
                 && ultimoPokemonJugador.estaDebilitado()) {
             vista.mostrarMensaje("\n¡" + actual.getNombre() + " entra en batalla!");
+            jugador.cambiarPokemonActivo(actual); // Asegurar reordenamiento para mantenerlo al frente
         }
         ultimoPokemonJugador = actual;
     }
@@ -89,8 +90,22 @@ public class BatallaController {
         Objeto objeto = vista.pedirObjetoInventario(inv);
         if (objeto == null) return; // canceló, no gasta turno
 
-        Pokemon objetivo = jugador.pokemonActivo().orElse(null);
-        if (objetivo == null) return;
+        Pokemon objetivo = null;
+        if (objeto.tipo() == Objeto.TipoObjeto.REVIVIR) {
+            List<Pokemon> debilitados = jugador.getEquipoActivo().stream()
+                    .filter(Pokemon::estaDebilitado)
+                    .toList();
+
+            if (debilitados.isEmpty()) {
+                vista.mostrarMensaje("No tienes Pokémon debilitados para revivir.");
+                return; // no gasta turno
+            }
+
+            objetivo = vista.pedirPokemonDelEquipo(debilitados, "¿A qué Pokémon debilitado revivir?");
+        } else {
+            objetivo = jugador.pokemonActivo().orElse(null);
+        }
+        if (objetivo == null) return; // canceló, no gasta turno
 
         boolean exito = jugador.usarObjeto(objeto.id(), objetivo);
         if (exito) {
@@ -124,6 +139,8 @@ public class BatallaController {
     private void manejarTurnoRival(Batalla batalla, Entrenador rival) {
         Pokemon pokemon = rival.pokemonActivo().orElse(null);
         if (pokemon == null) return;
+
+        rival.cambiarPokemonActivo(pokemon); // Mantener al rival activo al inicio de su equipo
 
         List<Movimiento> movimientos = pokemon.getMovimientos();
         if (movimientos.isEmpty()) return;
