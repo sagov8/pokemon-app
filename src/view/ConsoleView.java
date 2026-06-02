@@ -213,6 +213,9 @@ public class ConsoleView implements BatallaObserver{
     }
 
     public int pedirMovimiento(List<Movimiento> movimientos) {
+        if (movimientos.isEmpty()) {
+            throw new IllegalStateException("El Pokémon no tiene movimientos disponibles.");
+        }
         System.out.println("\nElige un movimiento:");
         for (int i = 0; i < movimientos.size(); i++) {
             Movimiento m = movimientos.get(i);

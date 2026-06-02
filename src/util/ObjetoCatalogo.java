@@ -32,6 +32,8 @@ public class ObjetoCatalogo {
         inv.agregarObjeto(SUPER_POCION);
         inv.agregarObjeto(REVIVIR);
         inv.agregarObjeto(POKEBOLA);
+        inv.agregarObjeto(POKEBOLA);
+        inv.agregarObjeto(POKEBOLA);
         return inv;
     }
 

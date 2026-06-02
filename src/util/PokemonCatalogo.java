@@ -26,12 +26,59 @@ public class PokemonCatalogo {
     }
 
     public static Pokemon crearPorId(int id, int nivel) {
-        return switch (id) {
-            case 1 -> new Pokemon(1, "Bulbasaur", TipoPokemon.TIERRA, nivel, 45, 49, 49, 45);
-            case 2 -> new Pokemon(2, "Charmander", TipoPokemon.FUEGO, nivel, 39, 52, 43, 65);
-            case 3 -> new Pokemon(3, "Squirtle", TipoPokemon.AGUA, nivel, 44, 48, 65, 43);
+        // Estadísticas base a nivel 5
+        int baseHp;
+        int baseAtk;
+        int baseDef;
+        int baseVel;
+        String nombre;
+        TipoPokemon tipo;
+
+        switch (id) {
+            case 1 -> { nombre = "Charmander"; tipo = TipoPokemon.FUEGO; baseHp = 100; baseAtk = 52; baseDef = 43; baseVel = 65; }
+            case 2 -> { nombre = "Squirtle"; tipo = TipoPokemon.AGUA; baseHp = 110; baseAtk = 48; baseDef = 65; baseVel = 43; }
+            case 3 -> { nombre = "Geodude"; tipo = TipoPokemon.TIERRA; baseHp = 120; baseAtk = 80; baseDef = 100; baseVel = 20; }
+            case 4 -> { nombre = "Pikachu"; tipo = TipoPokemon.ELECTRICO; baseHp = 90; baseAtk = 55; baseDef = 40; baseVel = 90; }
+            case 5 -> { nombre = "Abra"; tipo = TipoPokemon.PSIQUICO; baseHp = 85; baseAtk = 75; baseDef = 35; baseVel = 90; }
+            case 6 -> { nombre = "Pidgey"; tipo = TipoPokemon.AIRE; baseHp = 95; baseAtk = 45; baseDef = 40; baseVel = 56; }
             default -> throw new IllegalArgumentException("Pokemon no encontrado con id: " + id);
-        };
+        }
+
+        int vidaMaxima = baseHp;
+        int ataque = baseAtk;
+        int defensa = baseDef;
+        int velocidad = baseVel;
+
+        if (nivel > 5) {
+            for (int lvl = 6; lvl <= nivel; lvl++) {
+                vidaMaxima += lvl * 2;
+                ataque += lvl;
+                defensa += lvl;
+                velocidad += lvl / 2;
+            }
+        } else if (nivel < 5) {
+            for (int lvl = 5; lvl > nivel; lvl--) {
+                vidaMaxima -= lvl * 2;
+                ataque -= lvl;
+                defensa -= lvl;
+                velocidad -= lvl / 2;
+            }
+        }
+
+        Pokemon p = new Pokemon(id, nombre, tipo, nivel, vidaMaxima, ataque, defensa, velocidad);
+        asignarMovimientosPorTipo(p);
+
+        // Asignar evoluciones correspondientes
+        switch (id) {
+            case 1 -> p.setEvolucion(crearCharmeleon());
+            case 2 -> p.setEvolucion(crearWartortle());
+            case 3 -> p.setEvolucion(crearGraveler());
+            case 4 -> p.setEvolucion(crearRaichu());
+            case 5 -> p.setEvolucion(crearKadabra());
+            case 6 -> p.setEvolucion(crearPidgeotto());
+        }
+
+        return p;
     }
 
     public static Pokemon crearEvolucionPorId(int id) {

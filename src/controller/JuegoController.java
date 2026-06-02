@@ -329,18 +329,18 @@ public class JuegoController {
             return false;
         }
 
-        inventario.eliminarObjeto(pokebola.id());
+        inventario.tomarObjeto(pokebola.id());
 
         double porcentajeVida = salvaje.porcentajeVida();
 
         double probabilidadCaptura;
 
         if (porcentajeVida <= 0.25) {
-            probabilidadCaptura = 0.75;
+            probabilidadCaptura = 0.95;
         } else if (porcentajeVida <= 0.50) {
-            probabilidadCaptura = 0.50;
+            probabilidadCaptura = 0.75;
         } else {
-            probabilidadCaptura = 0.25;
+            probabilidadCaptura = 0.50;
         }
 
         return Math.random() < probabilidadCaptura;
